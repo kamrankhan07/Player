@@ -590,6 +590,9 @@ extension Player {
         if let currentPlayerItem = self._playerItem {
             NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: currentPlayerItem)
             NotificationCenter.default.removeObserver(self, name: .AVPlayerItemFailedToPlayToEndTime, object: currentPlayerItem)
+            NotificationCenter.default.removeObserver(self, name: .AVPlayerItemPlaybackStalled, object: currentPlayerItem)
+            NotificationCenter.default.removeObserver(self, name: .AVPlayerItemTimeJumped, object: currentPlayerItem)
+            NotificationCenter.default.removeObserver(self, name: .AVPlayerItemNewErrorLogEntry, object: currentPlayerItem)
         }
 
         self._playerItem = playerItem
@@ -608,6 +611,9 @@ extension Player {
             self.addPlayerItemObservers()
             NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime(_:)), name: .AVPlayerItemDidPlayToEndTime, object: updatedPlayerItem)
             NotificationCenter.default.addObserver(self, selector: #selector(playerItemFailedToPlayToEndTime(_:)), name: .AVPlayerItemFailedToPlayToEndTime, object: updatedPlayerItem)
+            NotificationCenter.default.addObserver(self, selector: #selector(playerItemPlaybackStalled(_:)), name: .AVPlayerItemPlaybackStalled, object: updatedPlayerItem)
+            NotificationCenter.default.addObserver(self, selector: #selector(playerItemTimeJumped(_:)), name: .AVPlayerItemTimeJumped, object: updatedPlayerItem)
+            NotificationCenter.default.addObserver(self, selector: #selector(playerItemNewErrorLogEntry(_:)), name: .AVPlayerItemNewErrorLogEntry, object: updatedPlayerItem)
         }
 
         self._avplayer.replaceCurrentItem(with: self._playerItem)
@@ -659,7 +665,23 @@ extension Player {
     }
 
     @objc internal func playerItemFailedToPlayToEndTime(_ aNotification: Notification) {
+        print("playerItemFailedToPlayToEndTime")
         self.playbackState = .failed
+    }
+
+    @objc internal func playerItemPlaybackStalled(_ aNotification: Notification) {
+        print("playerItemPlaybackStalled")
+    }
+    
+    @objc internal func playerItemTimeJumped(_ aNotification: Notification) {
+        print("playerItemTimeJumped")
+    }
+    
+    @objc internal func playerItemNewErrorLogEntry(_ aNotification: Notification) {
+        print("playerItemNewErrorLogEntry")
+        if let playerItem = aNotification.object as? AVPlayerItem, let errorLog = playerItem.errorLog() {
+            NSLog("Error: \(errorLog)")
+        }
     }
 
     // MARK: - UIApplication handlers

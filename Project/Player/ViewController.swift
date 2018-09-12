@@ -26,7 +26,7 @@
 
 import UIKit
 
-let videoUrl = URL(string: "https://v.cdn.vine.co/r/videos/AA3C120C521177175800441692160_38f2cbd1ffb.1.5.13763579289575020226.mp4")!
+let videoUrl = URL(string: "https://webapichilindo-aase.streaming.media.azure.net/4a5a4d17-a066-429e-b356-d15e13c6d119/41-539_InflatableAirBed_V2_FEED_.ism/manifest(format=m3u8-aapl)")!
 
 class ViewController: UIViewController {
 
@@ -50,6 +50,7 @@ class ViewController: UIViewController {
         self.player.playbackDelegate = self
         
         self.player.playerView.playerBackgroundColor = .black
+        self.player.playbackLoops = true
         
         self.addChildViewController(self.player)
         self.view.addSubview(self.player.view)
@@ -58,6 +59,10 @@ class ViewController: UIViewController {
         self.player.url = videoUrl
         
         self.player.playbackLoops = true
+        
+//        if #available(iOS 11.0, *) {
+//            self.player.preferredMaximumResolution = CGSize(width: 100, height: 100)
+//        }
         
         let tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer(_:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
